@@ -204,10 +204,6 @@ button {
     font-size: var(--font-size-base);
     font-weight: 600;
     border-radius: var(--border-radius-lg);
-    /* ERROR 4 (AVANZADO): Los botones cambian de estado de forma abrupta sin suavidad
-       SOLUCIÓN: Falta la propiedad transition para animar los cambios de estado
-       Agregar: transition: all var(--transition-base);
-       Esto hace que el hover y otros estados se animen suavemente */
     cursor: pointer;
     white-space: nowrap;
     transition: all var(--transition-base);
@@ -217,8 +213,7 @@ button {
     background: var(--gradient-primary);
     color: white;
     border: none;
-    /* ERROR 5: El botón primario no tiene profundidad ni efecto de brillo
-       PISTA: Falta la propiedad que agrega sombras al elemento */
+    box-shadow: var(--shadow-md);
 }
 
 .btn--primary:hover {
@@ -278,6 +273,7 @@ button {
        PISTA: Falta una propiedad de flexbox que alinea items en el eje transversal */
     justify-content: space-between;
     height: 100%;
+    align-items: center;
 }
 
 .nav__logo {

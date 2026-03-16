@@ -555,10 +555,6 @@ button {
     background: var(--gradient-primary);
     transform: scaleX(0);
     transition: transform var(--transition-base);
-    /* ERROR 12 (AVANZADO): La línea superior de las cards aparece instantáneamente sin animación
-       SOLUCIÓN: Falta la transición para la propiedad transform
-       Agregar: transition: transform var(--transition-base);
-       El pseudoelemento ::before necesita su propia transición para animar el scaleX */
 }
 
 .interest__card:hover {
@@ -753,12 +749,9 @@ button {
     color: #0077b5;
 }
 
-/* ERROR 13 (AVANZADO): El icono de GitHub no tiene color visible
-   SOLUCIÓN: Falta la propiedad color para el texto/icono
-   Agregar: color: var(--color-text-primary);
-   Los selectores específicos como --github necesitan definir su propio color */
 .social__icon--github {
     background: rgba(255, 255, 255, 0.1);
+    color: var(--color-text-primary);
 }
 
 .social__icon--email {
@@ -802,6 +795,7 @@ button {
        PISTA: Falta definir cómo se distribuyen las columnas en el grid */
     display: grid;
     gap: var(--spacing-xl);
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .project__card {

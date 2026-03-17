@@ -41,62 +41,27 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- ========== HEADER ========== -->
-    <header class="header" id="header">
-        <nav class="nav container">
-            <a href="#home" class="nav__logo">
-                <span class="logo__bracket">&lt;</span>Carlos Emiliano Segura Loera<span class="logo__bracket">/&gt;</span>
-            </a>
-            
-            <!-- Checkbox para menú móvil (CSS only) -->
-            <input type="checkbox" id="nav-toggle" class="nav__checkbox">
-            <label for="nav-toggle" class="nav__toggle">
-                <i class="fas fa-bars"></i>
-            </label>
-            
-            <div class="nav__menu" id="nav-menu">
-                <label for="nav-toggle" class="nav__close">
-                    <i class="fas fa-times"></i>
-                </label>
-                
-                <ul class="nav__list">
-                    <li class="nav__item">
-                        <label for="nav-toggle">
-                            <a href="#home" class="nav__link">Homepage</a>
-                        </label>
-                    </li>
-                    <li class="nav__item">
-                        <label for="nav-toggle">
-                            <a href="#interests" class="nav__link">Interests</a>
-                        </label>
-                    </li>
-                    <li class="nav__item">
-                        <label for="nav-toggle">
-                            <a href="#cv" class="nav__link">CV</a>
-                        </label>
-                    </li>
-                    <li class="nav__item">
-                        <label for="nav-toggle">
-                            <a href="#projects" class="nav__link">Proyects</a>
-                        </label>
-                    </li>
-                    <li class="nav__item">
-                        <label for="nav-toggle">
-                            <a href="#contact" class="nav__link">Contac</a>
-                        </label>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+    <!-- ========== FLOATING NAV ========== -->
+    <nav class="floating-nav" id="floating-nav">
+        <a href="#home" class="floating-nav__link">Home</a>
+        <a href="#interests" class="floating-nav__link">Interests</a>
+        <a href="#cv" class="floating-nav__link">CV</a>
+        <a href="#projects" class="floating-nav__link">Projects</a>
+        <a href="#contact" class="floating-nav__link">Contact</a>
+    </nav>
 
     <main class="main">
         <!-- ========== HERO SECTION ========== -->
         <section class="hero section" id="home">
+            <!-- Shader Animation (Three.js) -->
+            <div class="shader-canvas" id="shader-container" aria-hidden="true"></div>
             <div class="hero__container container">
                 <div class="hero__content">
                     <span class="hero__greeting">Hello! I'm</span>
@@ -119,17 +84,6 @@
                             <i class="fas fa-envelope"></i> Contact me
                         </a>
                     </div>
-                </div>
-                
-                <div class="hero__image">
-                    <div class="hero__blob">
-                        <div class="hero__avatar">
-                            <i class="fas fa-user-astronaut"></i>
-                        </div>
-                    </div>
-                    <div class="hero__decoration hero__decoration--1"></div>
-                    <div class="hero__decoration hero__decoration--2"></div>
-                    <div class="hero__decoration hero__decoration--3"></div>
                 </div>
             </div>
             
@@ -544,5 +498,178 @@
     <a href="#home" class="scroll-top" id="scroll-top">
         <i class="fas fa-arrow-up"></i>
     </a>
+
+    <!-- Three.js Shader Animation Script -->
+    <script>
+        (function() {
+            const container = document.getElementById('shader-container');
+            if (!container || typeof THREE === 'undefined') return;
+
+            // Vertex shader
+            const vertexShader = `
+                void main() {
+                    gl_Position = vec4( position, 1.0 );
+                }
+            `;
+
+            // Fragment shader (exact port from reference)
+            const fragmentShader = `
+                #define TWO_PI 6.2831853072
+                #define PI 3.14159265359
+
+                precision highp float;
+                uniform vec2 resolution;
+                uniform float time;
+
+                void main(void) {
+                    vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+                    float t = time * 0.05;
+                    float lineWidth = 0.002;
+
+                    vec3 color = vec3(0.0);
+                    for(int j = 0; j < 3; j++){
+                        for(int i = 0; i < 5; i++){
+                            color[j] += lineWidth * float(i*i) / abs(fract(t - 0.01*float(j) + float(i)*0.01) * 5.0 - length(uv) + mod(uv.x + uv.y, 0.2));
+                        }
+                    }
+                    
+                    gl_FragColor = vec4(color[0], color[1], color[2], 1.0);
+                }
+            `;
+
+            // Initialize Three.js scene
+            const camera = new THREE.Camera();
+            camera.position.z = 1;
+
+            const scene = new THREE.Scene();
+            const geometry = new THREE.PlaneGeometry(2, 2);
+
+            const uniforms = {
+                time: { type: 'f', value: 1.0 },
+                resolution: { type: 'v2', value: new THREE.Vector2() }
+            };
+
+            const material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Handle resize
+            function onResize() {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                renderer.setSize(width, height);
+                uniforms.resolution.value.x = renderer.domElement.width;
+                uniforms.resolution.value.y = renderer.domElement.height;
+            }
+            onResize();
+            window.addEventListener('resize', onResize);
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                uniforms.time.value += 0.05;
+                renderer.render(scene, camera);
+            }
+            animate();
+        })();
+    </script>
+    <!-- Floating Nav Scroll Behavior -->
+    <script>
+        (function() {
+            const nav = document.getElementById('floating-nav');
+            if (!nav) return;
+            
+            let lastScrollY = 0;
+            const threshold = 0.05; // 5% of page
+
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const pageHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollProgress = pageHeight > 0 ? scrollY / pageHeight : 0;
+
+                if (scrollProgress < threshold) {
+                    // At the very top — hide nav
+                    nav.classList.add('floating-nav--hidden');
+                } else {
+                    const direction = scrollY - lastScrollY;
+                    if (direction < 0) {
+                        // Scrolling UP — show nav
+                        nav.classList.remove('floating-nav--hidden');
+                    } else {
+                        // Scrolling DOWN — hide nav
+                        nav.classList.add('floating-nav--hidden');
+                    }
+                }
+                lastScrollY = scrollY;
+            }, { passive: true });
+
+            // Start hidden
+            nav.classList.add('floating-nav--hidden');
+        })();
+    </script>
+
+    <!-- Glowing Card Effect -->
+    <script>
+        (function() {
+            const cards = document.querySelectorAll('.interest__card, .project__card');
+            if (!cards.length) return;
+
+            // Add glow wrapper to each card
+            cards.forEach(card => {
+                // Create glow element
+                const glow = document.createElement('div');
+                glow.className = 'card-glow';
+                glow.innerHTML = '<div class="card-glow__inner"></div>';
+                card.appendChild(glow);
+
+                // Set CSS custom properties
+                card.style.setProperty('--glow-start', '0');
+                card.style.setProperty('--glow-active', '0');
+                card.style.setProperty('--glow-spread', '60');
+            });
+
+            let lastPointer = { x: 0, y: 0 };
+
+            function updateCards(e) {
+                const mouseX = e ? e.clientX : lastPointer.x;
+                const mouseY = e ? e.clientY : lastPointer.y;
+                if (e) lastPointer = { x: mouseX, y: mouseY };
+
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const centerX = rect.left + rect.width * 0.5;
+                    const centerY = rect.top + rect.height * 0.5;
+                    
+                    // Check proximity
+                    const proximity = 100;
+                    const isNear = mouseX > rect.left - proximity &&
+                                   mouseX < rect.right + proximity &&
+                                   mouseY > rect.top - proximity &&
+                                   mouseY < rect.bottom + proximity;
+
+                    card.style.setProperty('--glow-active', isNear ? '1' : '0');
+
+                    if (!isNear) return;
+
+                    // Calculate angle
+                    const angle = Math.atan2(mouseY - centerY, mouseX - centerX) * (180 / Math.PI) + 90;
+                    card.style.setProperty('--glow-start', String(angle));
+                });
+            }
+
+            document.body.addEventListener('pointermove', updateCards, { passive: true });
+            window.addEventListener('scroll', () => updateCards(null), { passive: true });
+        })();
+    </script>
+
 </body>
 </html>

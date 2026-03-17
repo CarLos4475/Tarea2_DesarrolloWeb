@@ -483,6 +483,8 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: var(--spacing-md);
+    justify-content: center;
+    width: 100%;
 }
 
 .hero__image {
@@ -646,76 +648,69 @@ button {
 }
 
 .interest__card {
-    background: rgba(13, 13, 13, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--border-radius-xl);
-    padding: var(--spacing-xl);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: linear-gradient(180deg, rgba(5, 5, 5, 0.92), rgba(8, 8, 8, 0.88));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
     position: relative;
     overflow: visible;
-    z-index: 1;
-}
-
-/* Stacked card layers behind */
-.interest__card::before,
-.interest__card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: -1;
-}
-
-.interest__card::before {
-    background: rgba(215, 159, 30, 0.04);
-    border: 1px solid rgba(215, 159, 30, 0.06);
-}
-
-.interest__card::after {
-    background: rgba(76, 120, 148, 0.03);
-    border: 1px solid rgba(76, 120, 148, 0.05);
 }
 
 .interest__card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-6px);
     box-shadow: 
-        0 20px 40px rgba(215, 159, 30, 0.1),
-        0 0 30px rgba(76, 120, 148, 0.08);
-    border-color: rgba(215, 159, 30, 0.2);
+        0 20px 50px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    border-color: rgba(255, 255, 255, 0.14);
 }
 
-/* Fan-out stacked layers on hover */
-.interest__card:hover::before {
-    transform: translate(6px, 6px) rotate(2deg);
-    opacity: 0.7;
-}
-
-.interest__card:hover::after {
-    transform: translate(12px, 12px) rotate(4deg);
-    opacity: 0.5;
+.card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .card__icon {
-    width: 60px;
-    height: 60px;
-    background: rgba(215, 159, 30, 0.1);
-    border-radius: var(--border-radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-2xl);
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-lg);
-    transition: all var(--transition-base);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1rem;
+    flex: 0 0 auto;
 }
 
-.interest__card:hover .card__icon {
-    background: var(--gradient-primary);
-    color: white;
-    transform: scale(1.1);
+.card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card__action {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    transition: transform 150ms ease, background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.card__action:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.92);
 }
 
 .card__title {
@@ -732,6 +727,11 @@ button {
     line-height: 1.7;
 }
 
+.interest__card .card__description,
+.project__card .project__description {
+    color: rgba(255, 255, 255, 0.62);
+}
+
 .card__tags {
     display: flex;
     flex-wrap: wrap;
@@ -741,60 +741,75 @@ button {
 .tag {
     font-size: var(--font-size-xs);
     font-weight: 500;
-    color: var(--color-primary);
-    background: rgba(215, 159, 30, 0.1);
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius-full);
 }
 
 /* ========== GLOWING CARD EFFECT ========== */
+.project__card {
+    position: relative;
+    z-index: 0;
+}
+
+.interest__card {
+    z-index: 0;
+}
+
 .card-glow {
     pointer-events: none;
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    z-index: 0;
 }
 
-.interest__card:hover .card-glow,
-.project__card:hover .card-glow {
-    opacity: 1;
+/* Ensure real content sits above glow layer */
+.interest__card > *:not(.card-glow),
+.project__card > *:not(.card-glow) {
+    position: relative;
+    z-index: 1;
 }
 
 .card-glow__inner {
     position: absolute;
-    inset: -1px;
+    inset: 0;
     border-radius: inherit;
-    border: 1px solid transparent;
-    background: conic-gradient(
-        from calc((var(--glow-start, 0) - var(--glow-spread, 60)) * 1deg),
-        transparent 0deg,
-        #dd7bbb calc(var(--glow-spread, 60) * 0.5deg),
-        #d79f1e calc(var(--glow-spread, 60) * 1deg),
-        #5a922c calc(var(--glow-spread, 60) * 1.5deg),
-        #4c7894 calc(var(--glow-spread, 60) * 2deg),
-        transparent calc(var(--glow-spread, 60) * 2deg)
-    );
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.card-glow__inner::after {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--glowingeffect-border-width, 1px));
+    border-radius: inherit;
+    border: var(--glowingeffect-border-width, 1px) solid transparent;
+    background: var(--glow-gradient, repeating-conic-gradient(from 236.84deg at 50% 50%, #dd7bbb 0%, #d79f1e 25%, #5a922c 50%, #4c7894 75%, #dd7bbb 100%));
     background-attachment: fixed;
-    -webkit-mask-image: linear-gradient(#0000, #0000), conic-gradient(
-        from calc((var(--glow-start, 0) - var(--glow-spread, 60)) * 1deg),
-        transparent 0deg,
-        #fff calc(var(--glow-spread, 60) * 1deg),
-        transparent calc(var(--glow-spread, 60) * 2deg)
-    );
-    mask-image: linear-gradient(#0000, #0000), conic-gradient(
-        from calc((var(--glow-start, 0) - var(--glow-spread, 60)) * 1deg),
-        transparent 0deg,
-        #fff calc(var(--glow-spread, 60) * 1deg),
-        transparent calc(var(--glow-spread, 60) * 2deg)
-    );
+    filter: blur(var(--glow-blur, 0px));
+    opacity: var(--active, 0);
+    transition: opacity 0.3s ease;
     -webkit-mask-clip: padding-box, border-box;
     mask-clip: padding-box, border-box;
     -webkit-mask-composite: source-in;
     mask-composite: intersect;
-    opacity: var(--glow-active, 0);
-    transition: opacity 0.3s ease;
+    -webkit-mask-image: linear-gradient(#0000, #0000),
+        conic-gradient(
+            from calc((var(--start, 0) - var(--spread, 20)) * 1deg),
+            #00000000 0deg,
+            #fff,
+            #00000000 calc(var(--spread, 20) * 2deg)
+        );
+    mask-image: linear-gradient(#0000, #0000),
+        conic-gradient(
+            from calc((var(--start, 0) - var(--spread, 20)) * 1deg),
+            #00000000 0deg,
+            #fff,
+            #00000000 calc(var(--spread, 20) * 2deg)
+        );
 }
 
 /* Subjects */
@@ -978,77 +993,21 @@ button {
 }
 
 .project__card {
-    background: rgba(20, 20, 43, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(215, 159, 30, 0.08);
-    border-radius: var(--border-radius-xl);
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: linear-gradient(180deg, rgba(5, 5, 5, 0.92), rgba(8, 8, 8, 0.88));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    overflow: visible;
+    transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
 }
 
 .project__card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-6px);
     box-shadow: 
-        0 20px 40px rgba(215, 159, 30, 0.1),
-        0 0 30px rgba(76, 120, 148, 0.08);
-    border-color: rgba(215, 159, 30, 0.2);
-}
-
-.project__image {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-}
-
-.project__placeholder {
-    width: 100%;
-    height: 100%;
-    background: var(--gradient-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    color: white;
-    opacity: 0.8;
-}
-
-.project__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(10, 10, 26, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-md);
-    opacity: 0;
-    transition: opacity var(--transition-base);
-}
-
-.project__card:hover .project__overlay {
-    opacity: 1;
-}
-
-.project__link {
-    width: 50px;
-    height: 50px;
-    background: var(--color-bg-tertiary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-lg);
-    color: var(--color-text-primary);
-    transition: all var(--transition-base);
-}
-
-.project__link:hover {
-    background: var(--color-primary);
-    color: white;
-    transform: scale(1.1);
+        0 20px 50px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    border-color: rgba(255, 255, 255, 0.14);
 }
 
 .project__content {
@@ -1078,10 +1037,18 @@ button {
 .tech {
     font-size: var(--font-size-xs);
     font-weight: 600;
-    color: var(--color-secondary);
-    background: rgba(215, 159, 30, 0.1);
+    color: rgba(255, 255, 255, 0.82);
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius-sm);
+    transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.tech:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.14);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.35));
 }
 
 .projects__more {

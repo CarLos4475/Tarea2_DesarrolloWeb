@@ -1,42 +1,12 @@
-/* ========================================
-   LANDING PAGE - PORTFOLIO PROFESIONAL
-   Autor: Tu Nombre
-   Versión: 1.0 (EJERCICIO CON ERRORES)
-   ========================================
-   
-   ¡¡¡ EJERCICIO PARA ESTUDIANTES !!!
-   
-   Este archivo contiene ERRORES INTENCIONALES que debes encontrar y corregir.
-   
-   INSTRUCCIONES:
-   1. Busca los comentarios que comienzan con "ERROR #" para encontrar los problemas
-   2. Lee la PISTA para entender qué está mal
-   3. Si el error es AVANZADO, la SOLUCIÓN completa está incluida
-   4. Corrige el código y observa los cambios en el navegador
-   
-   TOTAL DE ERRORES EN CSS: 18
-   - Errores simples (solo pista): 13
-   - Errores avanzados (con solución): 5
-   
-   TEMAS QUE PRACTICARÁS:
-   - Variables CSS
-   - Flexbox y Grid
-   - Box model (margin, padding, border-radius)
-   - Transiciones y animaciones
-   - Selectores (incluyendo pseudoclases y pseudoelementos)
-   - Z-index y posicionamiento
-   
-   ¡Buena suerte!
-   ======================================== */
 
 /* ========== VARIABLES CSS ========== */
 :root {
     /* Colores principales */
-    --color-primary: #0ea5e9;          /* Cyan vibrante */
-    --color-primary-dark: #0284c7;
-    --color-primary-light: #38bdf8;
-    --color-secondary: #8b5cf6;         /* Violeta eléctrico */
-    --color-secondary-dark: #7c3aed;
+    --color-primary: #d4d3d3;         
+    --color-primary-dark: #eeeff0;
+    --color-primary-light: #ebedee;
+    --color-secondary: #4e4e4e;         
+    --color-secondary-dark: #e4e2e7;
     
     /* Colores de fondo */
     --color-bg-primary: #0f172a;        /* Azul medianoche */
